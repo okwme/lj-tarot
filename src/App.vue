@@ -1,7 +1,7 @@
 <template>
   <div>
     <form id="form" @submit.prevent="ask">
-      <input type="text"  id="ask" placeholder="Ask a question..." v-model="q"/>
+      <input ref="text" type="text"  id="ask" placeholder="Ask a question..." v-model="q"/>
       <input id="submit" type="submit" value="Tarot">
     </form>
     <div id="app" :style="bg">
@@ -67,6 +67,7 @@ export default {
         this.q = ''
       } else {
         this.$router.push('/' + mod)
+        this.$refs.text.blur()
       }
     }
   }
