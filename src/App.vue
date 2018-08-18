@@ -1,30 +1,54 @@
 <template>
-  <div id="app">
+  <div>
     <form id="form" @submit.prevent="ask">
       <input type="text"  id="ask" placeholder="Ask a question..." v-model="q"/>
       <input id="submit" type="submit" value="Tarot">
     </form>
-  <router-view :cards="cards"/>
+    <div id="app" :style="bg">
+      <router-view :cards="cards" />
+    </div>
   </div>
 </template>
 
 <script>
-var SHA256 = require('crypto-js/sha256')
-
+import BigNumber from 'bignumber.js'
 export default {
   name: 'App',
   data () {
     return {
       q: null,
       cards: 144,
-      currCard: null,
-      console: null
+      loaded: false,
+      filename: 'IMG_0000.jpg'
     }
+  },
+  mounted () {
+    let foo = new Image()
+    foo.onload = () => {
+      this.loaded = true
+    }
+    foo.src = this.bigfile
   },
   watch: {
     q () {
       if (this.q.trim() === '' && this.$route.name === 'Card') {
         this.$router.push('/')
+      }
+    }
+  },
+  computed: {
+    smallfile () {
+      return '/static/tarot/JPEG/' + this.filename
+    },
+    bigfile () {
+      return '/static/tarot/' + this.filename
+    },
+    bg () {
+      return {
+        filter: 'blur(' + (this.loaded ? 0 : 10) + 'px)',
+        'background-image': this.$route.name
+          ? 'none'
+          : 'url(' + (this.loaded ? this.bigfile : this.smallfile) + ')'
       }
     }
   },
@@ -35,7 +59,10 @@ export default {
         return
       }
       if (!this.q || this.q.trim() === '') return
-      let mod = (('0x' + SHA256(this.q).toString()) % this.cards) + 1
+      let cards = new BigNumber(this.cards, 10)
+      let mod = new BigNumber(encode(this.q), 16)
+        .mod(cards.toString(16))
+        .plus(1)
       if ('/' + mod === this.$route.path) {
         this.q = ''
       } else {
@@ -43,6 +70,12 @@ export default {
       }
     }
   }
+}
+function encode (string) {
+  var number = '0x'
+  var length = string.length
+  for (var i = 0; i < length; i++) number += string.charCodeAt(i).toString(16)
+  return number
 }
 document.addEventListener('touchstart', function () {}, true)
 </script>
@@ -67,12 +100,13 @@ button:focus {
 }
 #app {
   height: 100vh;
-  background-image: url('/static/tarot/IMG_0000.jpg');
   background-size: contain;
   background-position: center center;
   background-repeat: no-repeat;
+  transition: filter 300ms ease;
 }
 #form {
+  z-index: 2;
   display: inline-block;
   width: calc(100vh - 50px);
   max-width: calc(100% - 50px);
