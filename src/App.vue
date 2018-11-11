@@ -1,23 +1,24 @@
 <template>
   <div>
-    <form id="form" @submit.prevent="ask">
-      <input ref="text" type="text"  id="ask" placeholder="Ask a question..." v-model="q"/>
+    <form id="form" @submit.prevent="">
+      <input @keyup.enter="ask" ref="text" type="text"  id="ask" placeholder="Ask a question..." v-model="q"/>
       <input id="submit" type="submit" value="Tarot">
     </form>
     <div id="app" :style="bg">
-      <router-view :cards="cards" />
+      <router-view />
     </div>
   </div>
 </template>
 
 <script>
 import BigNumber from 'bignumber.js'
+import tarots from '../static/data.json'
 export default {
   name: 'App',
   data () {
     return {
       q: null,
-      cards: 144,
+      cards: tarots.length,
       loaded: false,
       filename: 'IMG_0000.jpg'
     }
@@ -60,13 +61,17 @@ export default {
       }
       if (!this.q || this.q.trim() === '') return
       let cards = new BigNumber(this.cards, 10)
-      let mod = new BigNumber(encode(this.q), 16)
-        .mod(cards.toString(16))
+      var d = new Date()
+      let mod = new BigNumber(
+        encode(this.q + d.getDate() + d.getMonth() + d.getFullYear()),
+        16
+      )
+        .mod(cards.toString(10))
         .plus(1)
-      if ('/' + mod === this.$route.path) {
+      if ('/' + mod.toString(10) === this.$route.path) {
         this.q = ''
       } else {
-        this.$router.push('/' + mod)
+        this.$router.push('/' + mod.toString(10))
         this.$refs.text.blur()
       }
     }
