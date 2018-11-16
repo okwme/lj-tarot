@@ -1,13 +1,14 @@
 <template>
   <div>
     <div class="card" :style="bg"/>
-    <div class="text">{{text}}</div>
+    <div v-if="id" class="flex text">
+      <u>{{title}}:</u><br>{{text}}
+    </div>
   </div>
 </template>
 
 <script>
 import tarots from '../../static/data.json'
-console.log(tarots)
 export default {
   name: 'Card',
   data () {
@@ -26,7 +27,7 @@ export default {
   },
   methods: {
     mount () {
-      if (this.id >= tarots.length || !this.id) {
+      if (this.key > tarots.length || !this.id) {
         this.$router.push('/')
       }
       this.loaded = false
@@ -34,7 +35,8 @@ export default {
       foo.onload = () => {
         this.loaded = true
       }
-      foo.onerror = () => {
+      foo.onerror = (error) => {
+        console.error(error)
         this.$router.push('/')
       }
       foo.src = this.bigname
@@ -42,18 +44,20 @@ export default {
   },
   computed: {
     id () {
-      let id = parseInt(this.name - 1)
-      return id
+      return parseInt(this.name)
+    },
+    key () {
+      return this.id - 1
     },
     flip () {
-      return this.id % 2 === 1
+      return this.key % 2 === 1
     },
     card () {
-      return Object.values(tarots[this.id])
+      return this.id && tarots[this.key]
     },
     base () {
-      let base = this.id % 2 === 1 ? this.id : this.id - 1
-      return Object.values(tarots[base])
+      let base = this.key % 2 === 0 ? this.key : this.key - 1
+      return this.id && tarots[base]
     },
     bigname () {
       return '/static/tarot/' + this.filename
@@ -62,14 +66,16 @@ export default {
       return '/static/tarot/JPEG/' + this.filename
     },
     text () {
-      return this.card[2]
+      return this.id && this.card.text
+    },
+    title () {
+      return this.id && this.card.title
     },
     filename () {
-      if (!this.id) return false
-      return this.base[0]
+      if (!this.id) return 'IMG_0000.jpg'
+      return this.base.img
     },
     bg () {
-      if (!this.id) return false
       return {
         transform: this.flip ? 'scaleX(-1)' : 'scaleX(1)',
         filter: 'blur(' + (this.loaded ? 0 : 10) + 'px)',
@@ -85,7 +91,6 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
 .card {
-  margin-top:100px;
   height: calc(100vh - 200px);
   background-size: contain;
   background-position: center center;
@@ -93,10 +98,14 @@ export default {
   transition: filter 300ms ease;
 }
 .text {
+  position: fixed;
+  top: calc(100vh - 150px);
+  left:50%;
   width: 100%;
   max-width: calc(100vh - 50px);
   margin: auto;
   margin-top:25px;
+  transform: translateX(-50%);
   padding:10px;
   font-size: 22px;
   line-height:1.2em;

@@ -8,7 +8,7 @@ export default new Router({
   mode: 'history',
   routes: [
     {
-      path: '/:name',
+      path: '/:name?',
       props: true,
       name: 'Card',
       component: Card

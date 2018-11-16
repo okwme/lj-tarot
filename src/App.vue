@@ -2,7 +2,6 @@
   <div>
     <form id="form" @submit.prevent="">
       <input @keyup.enter="ask" ref="text" type="text"  id="ask" placeholder="Ask a question..." v-model="q"/>
-      <input id="submit" type="submit" value="Tarot">
     </form>
     <div id="app" :style="bg">
       <router-view />
@@ -110,6 +109,7 @@ button:focus {
   background-position: center center;
   background-repeat: no-repeat;
   transition: filter 300ms ease;
+  padding-top:65px;
 }
 #form {
   z-index: 2;
@@ -119,7 +119,7 @@ button:focus {
   height: calc(100vh / 3);
   position: fixed;
   left: 50%;
-  top: 25px;
+  top: 10px;
   transform: translateX(-50%) translateY(0%);
 }
 #ask {
