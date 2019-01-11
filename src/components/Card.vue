@@ -1,8 +1,20 @@
 <template>
-  <div>
-    <div class="card" :style="bg"/>
-    <div v-if="id" class="flex text">
-      <u>{{title}}:</u><br>{{text}}
+  <div id="card-page">
+    <div class="card" :style="bg">
+      <a target="_blank" :href="this.bigname"><img style="opacity: 0" :src="this.loaded ? this.bigname : this.smallname" /></a>
+    </div>
+    <div class="text">
+      <div>
+        <div>
+          <template v-if="id">
+            <u>{{title}}:</u><br>{{text}}
+          </template>
+          <template v-else>
+              <div class="big">Many Queens Tarot Deck</div>
+             <div class="small">By <a href="https://lettiejane.com">Lettie Jane</a></div>
+          </template>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -78,38 +90,76 @@ export default {
     bg () {
       return {
         transform: this.flip ? 'scaleX(-1)' : 'scaleX(1)',
-        filter: 'blur(' + (this.loaded ? 0 : 10) + 'px)',
+        filter: this.loaded ? 'blur(0px)' : 'blur(10px)',
         'background-image':
           'url(' + (this.loaded ? this.bigname : this.smallname) + ')'
       }
     }
   },
-  props: ['name']
+  props: ['name', 'q']
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
 .card {
-  height: calc(100vh - 200px);
-  background-size: contain;
-  background-position: center center;
-  background-repeat: no-repeat;
   transition: filter 300ms ease;
+  filter: blur(10);
+  height:50vh;
+  overflow: hidden;
+  text-align:center;
+  background-position: center center;
+  background-size: cover;
+}
+.card img {
+  max-width: 100%;
+}
+.card.transform{
+  transform: scaleX(-1);
+}
+.card.filter {
+  filter: blur(0px);
 }
 .text {
-  position: fixed;
-  top: calc(100vh - 150px);
-  left:50%;
-  width: 100%;
-  max-width: calc(100vh - 50px);
-  margin: auto;
-  margin-top:25px;
-  transform: translateX(-50%);
   padding:10px;
   font-size: 22px;
   line-height:1.2em;
-  /* background-color: rgba(255,255,255,0.5); */
-  text-align: center;
+  text-align: left;
+  height:calc(50vh - 62px);
+  overflow: auto;
 }
+.text > div {
+    vertical-align: middle;
+}
+.text > div > div {
+  max-width:460px;
+  margin:auto;
+}
+.big {
+  font-size:1.4em;
+  line-height:1.6em;
+}
+.small {
+  font-size:0.8em;
+  margin-bottom:1em;
+}
+ @media screen and (orientation:landscape) {
+   .card {
+     height:100vh;
+     width:50vw;
+     float: left;
+   }
+   .text {
+     height:calc(100vh - 62px);
+     width:50vw;
+   }
+ }
+ @media screen and (min-width: 1024px), (min-height: 1024px) {
+  .text {
+      display:table;
+  }
+  .text > div {
+    display: table-cell;
+  }
+ }
 </style>
