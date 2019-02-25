@@ -1,7 +1,9 @@
 <template>
   <div id="card-page">
     <div class="card" :style="bg">
-      <a target="_blank" :href="this.bigname"><img style="opacity: 0" :src="this.loaded ? this.bigname : this.smallname" /></a>
+      <router-link :to="'/' + randomNum()">
+        <img style="opacity: 0" :src="this.loaded ? this.bigname : this.smallname" />
+      </router-link>
     </div>
     <div class="text">
       <div>
@@ -38,6 +40,14 @@ export default {
     this.mount()
   },
   methods: {
+    randomNum () {
+      let foo = false
+      while (!foo || foo === parseInt(this.name)) {
+        foo = Math.floor(Math.random() * (tarots.length - 1) + 1)
+        console.log(foo, parseInt(this.name))
+      }
+      return foo
+    },
     mount () {
       if (this.key > tarots.length || !this.id) {
         this.$router.push('/')
@@ -89,7 +99,7 @@ export default {
     },
     bg () {
       return {
-        transform: this.flip ? 'scaleX(-1)' : 'scaleX(1)',
+        transform: this.flip ? 'rotate(180DEG)' : 'rotate(0DEG',
         filter: this.loaded ? 'blur(0px)' : 'blur(10px)',
         'background-image':
           'url(' + (this.loaded ? this.bigname : this.smallname) + ')'
@@ -127,6 +137,7 @@ export default {
   text-align: left;
   height:calc(50vh - 62px);
   overflow: auto;
+  background-color: rgb(255, 255, 253);
 }
 .text > div {
     vertical-align: middle;

@@ -121,6 +121,7 @@ body {
   margin: 0;
   padding: 0;
   font-family: Georgia;
+  color: rgb(21, 21, 21);
 }
 input:focus,
 select:focus,
@@ -144,8 +145,9 @@ a, a:active, a:visited, a:hover {
   bottom: 0px;
   padding:10px;
   transform: translateX(-50%) translateY(0%);
-  background-color: white;
-  box-shadow: 0px -2px 13px grey;
+  background-color: rgb(255, 255, 253);
+  color: rgb(21, 21, 21);
+  border-top: 1px solid black;
 }
 #ask {
   width: 100%;
@@ -154,6 +156,7 @@ a, a:active, a:visited, a:hover {
   font-size: 22px;
   border: none;
   border-bottom: 1px solid black;
+  color: rgb(21, 21, 21);
 }
 #submit {
   position: fixed;
