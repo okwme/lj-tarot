@@ -136,6 +136,10 @@ a, a:active, a:visited, a:hover {
 #app {
   min-height:100vh;
 }
+
+form input {
+  border-radius: 0px;
+}
 #form {
   z-index: 2;
   display: inline-block;
