@@ -12,7 +12,7 @@
             <u>{{title}}:</u><br>{{text}}
           </template>
           <template v-else>
-              <div class="big">Many Queens Tarot Deck</div>
+              <div class="big">Oracle</div>
              <div class="small">By <a href="https://lettiejane.com">Lettie Jane</a></div>
           </template>
         </div>
